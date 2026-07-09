@@ -1,0 +1,106 @@
+[
+  {
+    "schema": "szl.guardrail.record/v1",
+    "ns": "szl-guardrail-receipt",
+    "ts": 1782614130.0,
+    "envelope": {
+      "_dsse": "DSSEv1",
+      "payloadType": "application/vnd.szl.guardrail-receipt+json",
+      "payload": "eyJhY3Rpb24iOiJndWFyZHJhaWwiLCJjaGFpbl92ZXJpZmllZCI6dHJ1ZSwiZGVjaXNpb24iOiJhbGxvdyIsImRpZ2VzdCI6ImYxODZiNjJkYjYxZjAwYjVjNmRhN2FlMmY4ZDgwZTlhZTQ5OGMxOTQ3ODllZGZhMzU2YjgzNmRlNzA2YWIxNzciLCJlbmVyZ3kiOnsiZXZpZGVuY2UiOnsicmVhc29uIjoiYSBndWFyZHJhaWwgYWxsb3cvZGVueSBkZWNpc2lvbiBwZXJmb3JtcyBubyBtZXRlcmVkIGluZmVyZW5jZTsgbm8gTlZNTC9lbmVyZ3kgcmVhZGluZyBhcHBsaWVzLiJ9LCJqb3VsZXMiOm51bGwsImxhYmVsIjoiVU5BVkFJTEFCTEUifSwiZ3VhcmRyYWlsIjp7ImNhdGVnb3JpZXMiOltdLCJtZXRhZGF0YSI6eyJtYXRjaGVkX3J1bGVzIjpbXSwic2NvcmVfZm9ybXVsYSI6IjEuMCBpZiBjbGVhbiBlbHNlIG1heCgwLCAxIC0gMC41KmhpdHMpIiwic2NvcmVfa2luZCI6ImFkdmlzb3J5IGhldXJpc3RpYyDigJQgbm90IG1lYXN1cmVkLCBub3QgYSBwcm9vZiJ9LCJuYW1lIjoic3psLXJ1bGUtYmFzZWQtZ3VhcmRyYWlsIiwicmVhc29uIjoibm8gcnVsZSBtYXRjaGVkIiwidmVyc2lvbiI6IjAuMS4wIn0sImhvbmVzdF9ibG9ja2VkIjpmYWxzZSwibGFtYmRhIjp7ImxhYmVsIjoizpsgPSBDb25qZWN0dXJlIDEg4oCUIG5ldmVyIGdyZWVuIiwibm90ZSI6ImFkdmlzb3J5LCBub24tY29tcGVuc2F0b3J5OyBuZXZlciBhIHByb29mIG9mIHNhZmV0eS4iLCJzY29yZSI6MS4wfSwibnMiOiJzemwtZ3VhcmRyYWlsLXJlY2VpcHQiLCJvcmdhbiI6InN6bC1ydWxlLWJhc2VkLWd1YXJkcmFpbCIsInBheWxvYWRfZGlnZXN0IjoiMTE1MDQ5YTI5ODUzMmJlMmYxODFlZGIwM2Y3NjY3NzBjMGRiODRjMjJhZmYzOTAwM2ZlYzM0MGRlYWVjNzU0NSIsInByZXYiOiIwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwIiwic2NoZW1hIjoic3psLmd1YXJkcmFpbC5yZWNlaXB0L3YxIiwic2VxIjowLCJzaWduYXR1cmUiOiJEU1NFX1BMQUNFSE9MREVSIiwidHMiOjE3ODI2MTQxMzAuMH0=",
+      "_pae_sha256": "637d2808b72f9d4e497fe2e2d3ae5a5b799713fdb3672072a489edbcd0101d84",
+      "_signed_at": "2026-07-09T15:33:48Z",
+      "signatures": [
+        {
+          "keyid": "ephemeral-demo-key",
+          "sig": "MEQCIDbDjw1CXPO+VeF06GmzsglMaq84X+P2vqwGe9komfxVAiB7FzLD0e3zjGwkomb3bRRDB/rl92UH0oYHg6tzpmb8ug=="
+        }
+      ],
+      "signed": true,
+      "honesty": "REAL — ECDSA-P256-SHA256 over the standard DSSE PAE. Proves this receipt body was signed by the holder of the key; it does NOT prove the guardrail verdict is correct and is NOT zero-knowledge.",
+      "verify_key_url": "https://huggingface.co/spaces/SZLHOLDINGS/guardrail-receipt"
+    },
+    "verify": {
+      "algorithm": "ECDSA-P256-SHA256 over DSSE PAE (DSSEv1)",
+      "how_to_verify": "python -m szl_guardrail_receipt verify <file>  — or the dependency-free governed-receipt-spec/verify.py.",
+      "spec": "https://github.com/szl-holdings/governed-receipt-spec"
+    }
+  },
+  {
+    "schema": "szl.guardrail.record/v1",
+    "ns": "szl-guardrail-receipt",
+    "ts": 1782614131.0,
+    "envelope": {
+      "_dsse": "DSSEv1",
+      "payloadType": "application/vnd.szl.guardrail-receipt+json",
+      "payload": "eyJhY3Rpb24iOiJndWFyZHJhaWwiLCJjaGFpbl92ZXJpZmllZCI6dHJ1ZSwiZGVjaXNpb24iOiJhbGxvdyIsImRpZ2VzdCI6ImYzNjZjMTg0M2Q2MDA3YTYzYWVmNDI0OTI1Y2U4ZjEzMzVlMTY1Y2I1NmRlMTI1ODAxODE1NDlmNWQ3ZDZlMzAiLCJlbmVyZ3kiOnsiZXZpZGVuY2UiOnsicmVhc29uIjoiYSBndWFyZHJhaWwgYWxsb3cvZGVueSBkZWNpc2lvbiBwZXJmb3JtcyBubyBtZXRlcmVkIGluZmVyZW5jZTsgbm8gTlZNTC9lbmVyZ3kgcmVhZGluZyBhcHBsaWVzLiJ9LCJqb3VsZXMiOm51bGwsImxhYmVsIjoiVU5BVkFJTEFCTEUifSwiZ3VhcmRyYWlsIjp7ImNhdGVnb3JpZXMiOltdLCJtZXRhZGF0YSI6eyJtYXRjaGVkX3J1bGVzIjpbXSwic2NvcmVfZm9ybXVsYSI6IjEuMCBpZiBjbGVhbiBlbHNlIG1heCgwLCAxIC0gMC41KmhpdHMpIiwic2NvcmVfa2luZCI6ImFkdmlzb3J5IGhldXJpc3RpYyDigJQgbm90IG1lYXN1cmVkLCBub3QgYSBwcm9vZiJ9LCJuYW1lIjoic3psLXJ1bGUtYmFzZWQtZ3VhcmRyYWlsIiwicmVhc29uIjoibm8gcnVsZSBtYXRjaGVkIiwidmVyc2lvbiI6IjAuMS4wIn0sImhvbmVzdF9ibG9ja2VkIjpmYWxzZSwibGFtYmRhIjp7ImxhYmVsIjoizpsgPSBDb25qZWN0dXJlIDEg4oCUIG5ldmVyIGdyZWVuIiwibm90ZSI6ImFkdmlzb3J5LCBub24tY29tcGVuc2F0b3J5OyBuZXZlciBhIHByb29mIG9mIHNhZmV0eS4iLCJzY29yZSI6MS4wfSwibnMiOiJzemwtZ3VhcmRyYWlsLXJlY2VpcHQiLCJvcmdhbiI6InN6bC1ydWxlLWJhc2VkLWd1YXJkcmFpbCIsInBheWxvYWRfZGlnZXN0IjoiMzQxZTRlNTc4Zjk1ZjU4YTZjNzAwZTViZmU2OGExNGJkNzZlZjA2MGUwMGEzNmJjNTI4NjI2ZDhjNGQ2Njc5ZCIsInByZXYiOiJmMTg2YjYyZGI2MWYwMGI1YzZkYTdhZTJmOGQ4MGU5YWU0OThjMTk0Nzg5ZWRmYTM1NmI4MzZkZTcwNmFiMTc3Iiwic2NoZW1hIjoic3psLmd1YXJkcmFpbC5yZWNlaXB0L3YxIiwic2VxIjoxLCJzaWduYXR1cmUiOiJEU1NFX1BMQUNFSE9MREVSIiwidHMiOjE3ODI2MTQxMzEuMH0=",
+      "_pae_sha256": "a8fa87aaa9a51e1d1162d1fbb301763abdb9862505bffaaeb85491db76445250",
+      "_signed_at": "2026-07-09T15:33:48Z",
+      "signatures": [
+        {
+          "keyid": "ephemeral-demo-key",
+          "sig": "MEYCIQDF3J8lxVaRbely/jZZSKs091TWEfYJqo1JNhLUOo9vMQIhANteaI3gmJvXODiXffZr9dcyRPTEhYdbPZeDd2HWknjP"
+        }
+      ],
+      "signed": true,
+      "honesty": "REAL — ECDSA-P256-SHA256 over the standard DSSE PAE. Proves this receipt body was signed by the holder of the key; it does NOT prove the guardrail verdict is correct and is NOT zero-knowledge.",
+      "verify_key_url": "https://huggingface.co/spaces/SZLHOLDINGS/guardrail-receipt"
+    },
+    "verify": {
+      "algorithm": "ECDSA-P256-SHA256 over DSSE PAE (DSSEv1)",
+      "how_to_verify": "python -m szl_guardrail_receipt verify <file>  — or the dependency-free governed-receipt-spec/verify.py.",
+      "spec": "https://github.com/szl-holdings/governed-receipt-spec"
+    }
+  },
+  {
+    "schema": "szl.guardrail.record/v1",
+    "ns": "szl-guardrail-receipt",
+    "ts": 1782614132.0,
+    "envelope": {
+      "_dsse": "DSSEv1",
+      "payloadType": "application/vnd.szl.guardrail-receipt+json",
+      "payload": "eyJhY3Rpb24iOiJndWFyZHJhaWwiLCJjaGFpbl92ZXJpZmllZCI6dHJ1ZSwiZGVjaXNpb24iOiJkZW55IiwiZGlnZXN0IjoiNmVlOWQwY2JmZjUwOTUzODAxNjQ2ZGU2YWQzODhhNDRiYTE4MGZjZTk1NTMzYzI4ZWY2MGEwYjRhYmVkZDhiYiIsImVuZXJneSI6eyJldmlkZW5jZSI6eyJyZWFzb24iOiJhIGd1YXJkcmFpbCBhbGxvdy9kZW55IGRlY2lzaW9uIHBlcmZvcm1zIG5vIG1ldGVyZWQgaW5mZXJlbmNlOyBubyBOVk1ML2VuZXJneSByZWFkaW5nIGFwcGxpZXMuIn0sImpvdWxlcyI6bnVsbCwibGFiZWwiOiJVTkFWQUlMQUJMRSJ9LCJndWFyZHJhaWwiOnsiY2F0ZWdvcmllcyI6WyJwcm9tcHQtaW5qZWN0aW9uIl0sIm1ldGFkYXRhIjp7Im1hdGNoZWRfcnVsZXMiOlsiaWdub3JlIChhbGwgfHRoZSApPyhwcmV2aW91c3xwcmlvcnxhYm92ZSkgKGluc3RydWN0aW9uc3xwcm9tcHRzPykiXSwic2NvcmVfZm9ybXVsYSI6IjEuMCBpZiBjbGVhbiBlbHNlIG1heCgwLCAxIC0gMC41KmhpdHMpIiwic2NvcmVfa2luZCI6ImFkdmlzb3J5IGhldXJpc3RpYyDigJQgbm90IG1lYXN1cmVkLCBub3QgYSBwcm9vZiJ9LCJuYW1lIjoic3psLXJ1bGUtYmFzZWQtZ3VhcmRyYWlsIiwicmVhc29uIjoibWF0Y2hlZCBwb2xpY3kgY2F0ZWdvcmllczogcHJvbXB0LWluamVjdGlvbiIsInZlcnNpb24iOiIwLjEuMCJ9LCJob25lc3RfYmxvY2tlZCI6dHJ1ZSwibGFtYmRhIjp7ImxhYmVsIjoizpsgPSBDb25qZWN0dXJlIDEg4oCUIG5ldmVyIGdyZWVuIiwibm90ZSI6ImFkdmlzb3J5LCBub24tY29tcGVuc2F0b3J5OyBuZXZlciBhIHByb29mIG9mIHNhZmV0eS4iLCJzY29yZSI6MC41fSwibnMiOiJzemwtZ3VhcmRyYWlsLXJlY2VpcHQiLCJvcmdhbiI6InN6bC1ydWxlLWJhc2VkLWd1YXJkcmFpbCIsInBheWxvYWRfZGlnZXN0IjoiMTAwZWZmNGEwN2RlZGQ3MDQwY2MwZDMxYTBiYzVmYjZmZjVkOWQyNjkwMjEyOGU4OTAxZDU1MjBiMmI1N2UxYyIsInByZXYiOiJmMzY2YzE4NDNkNjAwN2E2M2FlZjQyNDkyNWNlOGYxMzM1ZTE2NWNiNTZkZTEyNTgwMTgxNTQ5ZjVkN2Q2ZTMwIiwic2NoZW1hIjoic3psLmd1YXJkcmFpbC5yZWNlaXB0L3YxIiwic2VxIjoyLCJzaWduYXR1cmUiOiJEU1NFX1BMQUNFSE9MREVSIiwidHMiOjE3ODI2MTQxMzIuMH0=",
+      "_pae_sha256": "604909051f5bf23d846d046de160755713bd8a1661e261d75d1174bfa79848c4",
+      "_signed_at": "2026-07-09T15:33:48Z",
+      "signatures": [
+        {
+          "keyid": "ephemeral-demo-key",
+          "sig": "MEYCIQC7fhkBR+ff1kMQ/qJkybB4U7GVVTOPHe6nVoLkiqvcXQIhAK3TG9P3fYNrcS4mvtgu+5BEC3ZZts4XhimN5fxhYqJz"
+        }
+      ],
+      "signed": true,
+      "honesty": "REAL — ECDSA-P256-SHA256 over the standard DSSE PAE. Proves this receipt body was signed by the holder of the key; it does NOT prove the guardrail verdict is correct and is NOT zero-knowledge.",
+      "verify_key_url": "https://huggingface.co/spaces/SZLHOLDINGS/guardrail-receipt"
+    },
+    "verify": {
+      "algorithm": "ECDSA-P256-SHA256 over DSSE PAE (DSSEv1)",
+      "how_to_verify": "python -m szl_guardrail_receipt verify <file>  — or the dependency-free governed-receipt-spec/verify.py.",
+      "spec": "https://github.com/szl-holdings/governed-receipt-spec"
+    }
+  },
+  {
+    "schema": "szl.guardrail.record/v1",
+    "ns": "szl-guardrail-receipt",
+    "ts": 1782614133.0,
+    "envelope": {
+      "_dsse": "DSSEv1",
+      "payloadType": "application/vnd.szl.guardrail-receipt+json",
+      "payload": "eyJhY3Rpb24iOiJndWFyZHJhaWwiLCJjaGFpbl92ZXJpZmllZCI6dHJ1ZSwiZGVjaXNpb24iOiJkZW55IiwiZGlnZXN0IjoiOWYzZWEyMDg2ZmRkYTAwZTgwZmQ0ZDQ3Zjk4ZTdlOTQ4ZjgzOGU5OWU0MTRkN2FhYjkyYWI1MjQyNTYyZGUyOSIsImVuZXJneSI6eyJldmlkZW5jZSI6eyJyZWFzb24iOiJhIGd1YXJkcmFpbCBhbGxvdy9kZW55IGRlY2lzaW9uIHBlcmZvcm1zIG5vIG1ldGVyZWQgaW5mZXJlbmNlOyBubyBOVk1ML2VuZXJneSByZWFkaW5nIGFwcGxpZXMuIn0sImpvdWxlcyI6bnVsbCwibGFiZWwiOiJVTkFWQUlMQUJMRSJ9LCJndWFyZHJhaWwiOnsiY2F0ZWdvcmllcyI6WyJzZWNyZXQtZXhmaWx0cmF0aW9uIl0sIm1ldGFkYXRhIjp7Im1hdGNoZWRfcnVsZXMiOlsiKHByaW50fHJldmVhbHxzaG93fGR1bXB8bGVhaylcXGIuKlxcYihhcGlbXy1dP2tleXxzZWNyZXR8cGFzc3dvcmR8dG9rZW58Y3JlZGVudGlhbClzP1xcYiJdLCJzY29yZV9mb3JtdWxhIjoiMS4wIGlmIGNsZWFuIGVsc2UgbWF4KDAsIDEgLSAwLjUqaGl0cykiLCJzY29yZV9raW5kIjoiYWR2aXNvcnkgaGV1cmlzdGljIOKAlCBub3QgbWVhc3VyZWQsIG5vdCBhIHByb29mIn0sIm5hbWUiOiJzemwtcnVsZS1iYXNlZC1ndWFyZHJhaWwiLCJyZWFzb24iOiJtYXRjaGVkIHBvbGljeSBjYXRlZ29yaWVzOiBzZWNyZXQtZXhmaWx0cmF0aW9uIiwidmVyc2lvbiI6IjAuMS4wIn0sImhvbmVzdF9ibG9ja2VkIjp0cnVlLCJsYW1iZGEiOnsibGFiZWwiOiLOmyA9IENvbmplY3R1cmUgMSDigJQgbmV2ZXIgZ3JlZW4iLCJub3RlIjoiYWR2aXNvcnksIG5vbi1jb21wZW5zYXRvcnk7IG5ldmVyIGEgcHJvb2Ygb2Ygc2FmZXR5LiIsInNjb3JlIjowLjV9LCJucyI6InN6bC1ndWFyZHJhaWwtcmVjZWlwdCIsIm9yZ2FuIjoic3psLXJ1bGUtYmFzZWQtZ3VhcmRyYWlsIiwicGF5bG9hZF9kaWdlc3QiOiJmZWI5N2I4MzA2YzljYmVmMDZjNDQ0NGUxM2ExNjMwYmJlMDZjNWU4ZmIwZjFkOGRiYzQyNzQ1OTNhN2MzNTM2IiwicHJldiI6IjZlZTlkMGNiZmY1MDk1MzgwMTY0NmRlNmFkMzg4YTQ0YmExODBmY2U5NTUzM2MyOGVmNjBhMGI0YWJlZGQ4YmIiLCJzY2hlbWEiOiJzemwuZ3VhcmRyYWlsLnJlY2VpcHQvdjEiLCJzZXEiOjMsInNpZ25hdHVyZSI6IkRTU0VfUExBQ0VIT0xERVIiLCJ0cyI6MTc4MjYxNDEzMy4wfQ==",
+      "_pae_sha256": "c0cc09e83b525d895baf260a167edd14cb3f9540f7fe9ace941394c2f74613b4",
+      "_signed_at": "2026-07-09T15:33:48Z",
+      "signatures": [
+        {
+          "keyid": "ephemeral-demo-key",
+          "sig": "MEQCIF2Bho0Kd/w2t8KrSZqytAGhKMjg5KhTHmvMfCNre0r/AiAgbBfaLd8qTL7AIfbvYifD/938ZDXTHsQ7xQYR8FBr4g=="
+        }
+      ],
+      "signed": true,
+      "honesty": "REAL — ECDSA-P256-SHA256 over the standard DSSE PAE. Proves this receipt body was signed by the holder of the key; it does NOT prove the guardrail verdict is correct and is NOT zero-knowledge.",
+      "verify_key_url": "https://huggingface.co/spaces/SZLHOLDINGS/guardrail-receipt"
+    },
+    "verify": {
+      "algorithm": "ECDSA-P256-SHA256 over DSSE PAE (DSSEv1)",
+      "how_to_verify": "python -m szl_guardrail_receipt verify <file>  — or the dependency-free governed-receipt-spec/verify.py.",
+      "spec": "https://github.com/szl-holdings/governed-receipt-spec"
+    }
+  }
+]
