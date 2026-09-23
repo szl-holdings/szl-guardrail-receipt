@@ -15,6 +15,7 @@ demos, tests, and CI.
 from __future__ import annotations
 
 import dataclasses
+import math
 import re
 from typing import Callable, Dict, List, Optional
 
@@ -49,6 +50,51 @@ class GuardrailVerdict:
     metadata: Dict[str, object] = dataclasses.field(default_factory=dict)
 
 
+def _strict_decision_mapping(out: Dict[str, object]) -> bool:
+    """Return the allow decision from one unambiguous boolean control field.
+
+    Guardrail adapters sit on an admission boundary, so Python truthiness is
+    deliberately not accepted here. Values such as ``"false"``, ``0`` or an
+    arbitrary object must not be silently reinterpreted as a safety verdict.
+    Likewise, multiple decision fields are rejected rather than resolved by
+    precedence because contradictory provider output is not qualified input.
+    """
+    decision_fields = [name for name in ("allowed", "blocked", "flagged") if name in out]
+    if len(decision_fields) != 1:
+        raise ValueError(
+            "guardrail callable dict must carry exactly one of "
+            "'allowed'/'blocked'/'flagged'"
+        )
+    field = decision_fields[0]
+    value = out[field]
+    if type(value) is not bool:
+        raise TypeError(f"guardrail callable field {field!r} must be a boolean")
+    return value if field == "allowed" else not value
+
+
+def _normalise_lambda_score(score: object) -> Optional[float]:
+    """Validate the optional advisory score without accepting bool/non-finite data."""
+    if score is None:
+        return None
+    if isinstance(score, bool) or not isinstance(score, (int, float)):
+        raise TypeError("guardrail callable 'lambda_score' must be a finite number in [0, 1]")
+    value = float(score)
+    if not math.isfinite(value) or not 0.0 <= value <= 1.0:
+        raise ValueError("guardrail callable 'lambda_score' must be a finite number in [0, 1]")
+    return value
+
+
+def _normalise_categories(categories: object) -> List[str]:
+    """Validate category evidence without treating a string as an iterable of labels."""
+    if categories is None:
+        return []
+    if not isinstance(categories, (list, tuple)) or any(
+        not isinstance(category, str) for category in categories
+    ):
+        raise TypeError("guardrail callable 'categories' must be a list/tuple of strings")
+    return list(categories)
+
+
 def verdict_from_callable(
     fn: Callable[[str], object],
     text: str,
@@ -58,16 +104,18 @@ def verdict_from_callable(
 ) -> GuardrailVerdict:
     """Adapt an arbitrary guardrail callable into a :class:`GuardrailVerdict`.
 
-    The callable may return a bool (True == allowed), or a mapping with any of
-    ``allowed`` / ``blocked`` / ``flagged`` / ``reason`` / ``categories`` /
-    ``lambda_score``. This is the seam for wrapping Llama-Guard / NeMo /
+    The callable may return a bool (True == allowed), or a mapping with exactly
+    one boolean control field from ``allowed`` / ``blocked`` / ``flagged`` plus
+    optional ``reason`` / ``categories`` / ``lambda_score``. Ambiguous or
+    truthy/falsy non-boolean decision values are rejected fail-closed instead
+    of being silently coerced. This is the seam for wrapping Llama-Guard / NeMo /
     guardrails-ai without this package importing them.
 
     Args:
         fn: The guardrail callable, applied to *text*.
         text: The input being screened.
         guardrail_name: Name to record on the verdict.
-        guardrail_version: Version to record on the verdict.
+        guardrail_version: Version string of that guardrail.
 
     Returns:
         A normalised :class:`GuardrailVerdict`.
@@ -81,25 +129,14 @@ def verdict_from_callable(
             reason="allowed" if out else "denied by guardrail callable",
         )
     if isinstance(out, dict):
-        if "allowed" in out:
-            allowed = bool(out["allowed"])
-        elif "blocked" in out:
-            allowed = not bool(out["blocked"])
-        elif "flagged" in out:
-            allowed = not bool(out["flagged"])
-        else:
-            raise ValueError(
-                "guardrail callable dict must carry one of "
-                "'allowed'/'blocked'/'flagged'"
-            )
-        score = out.get("lambda_score")
+        allowed = _strict_decision_mapping(out)
         return GuardrailVerdict(
             allowed=allowed,
             guardrail_name=guardrail_name,
             guardrail_version=guardrail_version,
             reason=str(out.get("reason", "allowed" if allowed else "denied")),
-            categories=list(out.get("categories", [])),
-            lambda_score=float(score) if isinstance(score, (int, float)) else None,
+            categories=_normalise_categories(out.get("categories", [])),
+            lambda_score=_normalise_lambda_score(out.get("lambda_score")),
             metadata={
                 k: v
                 for k, v in out.items()
