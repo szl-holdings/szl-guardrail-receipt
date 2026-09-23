@@ -54,6 +54,8 @@ jobs:
         with:
           repository: szl-holdings/governed-receipt-spec
           path: governed-receipt-spec
+      - name: Install governed-receipt-spec verifier dependencies
+        run: python -m pip install -r governed-receipt-spec/requirements.txt
       - name: Validate emitted receipts with the spec's offline verifier
         run: |
           python governed-receipt-spec/verify.py /tmp/chain.json \
