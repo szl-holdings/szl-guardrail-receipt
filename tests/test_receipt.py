@@ -11,7 +11,12 @@ from szl_guardrail_receipt import (
     emit_receipt,
     input_digest,
 )
-from szl_guardrail_receipt.receipt import ZERO_HASH, decode_decision
+from szl_guardrail_receipt.receipt import (
+    RECEIPT_SCHEMA,
+    RECORD_SCHEMA,
+    ZERO_HASH,
+    decode_decision,
+)
 
 
 def _body(record):
@@ -35,6 +40,18 @@ def test_emit_allow_receipt_shape():
     assert body["energy"]["label"] == "UNAVAILABLE"
     # honest Λ
     assert body["lambda"]["label"] == "Λ = Conjecture 1 — never green"
+
+
+def test_clear_wrapper_claims_are_bound_inside_sealed_payload():
+    gr = RuleBasedGuardrail()
+    rec = emit_receipt(gr.check("hello"), input_text="hello", ts=123.0)
+    body = _body(rec)
+
+    assert rec["schema"] == body["schema"] == RECORD_SCHEMA
+    assert body["receipt_schema"] == RECEIPT_SCHEMA
+    assert rec["ns"] == body["ns"]
+    assert rec["ts"] == body["ts"]
+    assert rec["verify"] == body["verify"]
 
 
 def test_deny_sets_honest_blocked():

@@ -18,6 +18,8 @@ Trust posture (honest, non-negotiable):
     ``{joules: null, label: "UNAVAILABLE", ...}`` — never a fabricated joule.
   * No key present ⇒ UNSIGNED-honest envelope (``signed: false``), never a fake
     signature.
+  * Clear wrapper claims are duplicated identically inside the sealed payload;
+    they never inherit DSSE integrity unless the signed bytes bind them.
 """
 from __future__ import annotations
 
@@ -46,6 +48,18 @@ _SIGNED_HONESTY = (
 )
 
 
+def _verification_metadata() -> Dict[str, str]:
+    """Return the public verification instructions bound into every receipt."""
+    return {
+        "algorithm": "ECDSA-P256-SHA256 over DSSE PAE (DSSEv1)",
+        "how_to_verify": (
+            "python -m szl_guardrail_receipt verify <file>  — or the "
+            "dependency-free governed-receipt-spec/verify.py."
+        ),
+        "spec": "https://github.com/szl-holdings/governed-receipt-spec",
+    }
+
+
 def _sha256_hex(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
@@ -70,6 +84,10 @@ def build_decision_body(
     ``digest`` is computed here as ``sha256(canonical_json(body-without-digest))``
     — a documented, reproducible chain-link value. The next receipt's ``prev``
     equals this ``digest``.
+
+    The sealed body also carries the wrapper schema and verification metadata
+    verbatim. That makes every clear wrapper claim independently bindable to the
+    DSSE payload instead of allowing unsigned metadata to inherit a signed PASS.
 
     Returns:
         The decision body dict, including ``digest`` and a
@@ -109,7 +127,11 @@ def build_decision_body(
             },
         },
         "chain_verified": prev == ZERO_HASH or seq > 0,
-        "schema": RECEIPT_SCHEMA,
+        # The outer record historically routes on RECORD_SCHEMA. Keep that
+        # public contract while naming the decoded decision profile separately.
+        "schema": RECORD_SCHEMA,
+        "receipt_schema": RECEIPT_SCHEMA,
+        "verify": _verification_metadata(),
         "signature": "DSSE_PLACEHOLDER",
     }
     if verdict.metadata:
@@ -206,9 +228,9 @@ class GuardrailReceiptChain:
 
         Returns:
             A receipt *record*: ``{schema, ns, ts, envelope, verify}`` where the
-            DSSE ``envelope`` carries the base64 decision body. This record
-            shape is understood by ``governed-receipt-spec/verify.py``.
-        """
+            clear claims are byte-for-byte represented inside the sealed DSSE
+            payload and the ``envelope`` carries that base64 decision body.
+    """
         if payload_digest is None:
             if input_text is None:
                 raise ValueError("provide input_text or payload_digest")
@@ -230,18 +252,11 @@ class GuardrailReceiptChain:
             verify_key_url=self.verify_key_url,
         )
         record: Dict[str, Any] = {
-            "schema": RECORD_SCHEMA,
-            "ns": self.ns,
+            "schema": body["schema"],
+            "ns": body["ns"],
             "ts": body["ts"],
             "envelope": envelope,
-            "verify": {
-                "algorithm": "ECDSA-P256-SHA256 over DSSE PAE (DSSEv1)",
-                "how_to_verify": (
-                    "python -m szl_guardrail_receipt verify <file>  — or the "
-                    "dependency-free governed-receipt-spec/verify.py."
-                ),
-                "spec": "https://github.com/szl-holdings/governed-receipt-spec",
-            },
+            "verify": dict(body["verify"]),
         }
         # advance chain
         self._prev = body["digest"]
