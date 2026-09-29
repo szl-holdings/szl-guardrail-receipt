@@ -6,7 +6,6 @@ Built and maintained by [SZL Holdings](https://a-11-oy.com). Apache-2.0.
 
 Guardrail tools (Llama-Guard, NeMo-Guardrails, guardrails-ai, ProtectAI injector detectors, …) output a *verdict* — but no **verifiable, replayable, signed audit record** of what was decided. `szl-guardrail-receipt` is a thin, dependency-light adapter that closes that gap: on each allow/deny it emits a signed, hash-chained **DSSE decision receipt** whose field names align with SZL's [`governed-receipt-spec`](https://github.com/szl-holdings/governed-receipt-spec), so anyone can re-check it offline with one command.
 
-- **Try it live:** [SZLHOLDINGS/guardrail-receipt](https://huggingface.co/spaces/SZLHOLDINGS/guardrail-receipt) on Hugging Face
 - **Receipt format + verifier:** [governed-receipt-spec](https://github.com/szl-holdings/governed-receipt-spec)
 
 ---
@@ -132,7 +131,6 @@ Valid receipts pass; a tampered payload breaks the content hash, a rewritten `pr
 
 - Live console: **[a-11-oy.com](https://a-11-oy.com)** · a11oy console `szlholdings-a11oy.hf.space`
 - Receipt format + offline verifier: **[governed-receipt-spec](https://github.com/szl-holdings/governed-receipt-spec)**
-- Live guardrail-receipt demo: **[SZLHOLDINGS/guardrail-receipt](https://huggingface.co/spaces/SZLHOLDINGS/guardrail-receipt)**
 - Hugging Face org: **[SZLHOLDINGS](https://huggingface.co/SZLHOLDINGS)** — the Governed Kernels collection (`szl-lambda-gate`, `szl-blocked`, `governed-inference-meter`, …)
 - GitHub org: **[szl-holdings](https://github.com/szl-holdings)**
 

@@ -9,8 +9,13 @@ Deterministic timestamps + an ephemeral key are used so the committed sample is
 stable across runs. This same emitted chain is what the ``spec-compat`` CI job
 feeds to ``governed-receipt-spec/verify.py`` to prove cross-verifier validity.
 
+The ephemeral key is never published, so the sample records no
+``verify_key_url`` by default. Pass ``--verify-key-url`` only with a URL that
+actually serves the public key used for signing.
+
 Usage:
     python examples/generate.py [--out examples/guardrail-receipt-chain.json]
+                                [--verify-key-url https://<host>/<public-key>.pem]
 """
 from __future__ import annotations
 
@@ -49,6 +54,11 @@ def main(argv=None) -> int:
     parser.add_argument(
         "--unsigned", action="store_true", help="emit UNSIGNED-honest receipts"
     )
+    parser.add_argument(
+        "--verify-key-url",
+        default=None,
+        help="public URL that serves the signing key (omit for the ephemeral demo key)",
+    )
     args = parser.parse_args(argv)
 
     key = keyid = None
@@ -61,11 +71,7 @@ def main(argv=None) -> int:
     chain = GuardrailReceiptChain(
         private_key_pem=key,
         keyid=keyid or "",
-        verify_key_url=(
-            "https://huggingface.co/spaces/SZLHOLDINGS/guardrail-receipt"
-            if key
-            else None
-        ),
+        verify_key_url=args.verify_key_url if key else None,
     )
     records = []
     for i, text in enumerate(SAMPLES):

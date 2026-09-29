@@ -37,7 +37,6 @@ dev = ["pytest>=8", "cryptography>=42"]
 Homepage = "https://a-11-oy.com"
 Repository = "https://github.com/szl-holdings/szl-guardrail-receipt"
 Spec = "https://github.com/szl-holdings/governed-receipt-spec"
-Demo = "https://huggingface.co/spaces/SZLHOLDINGS/guardrail-receipt"
 
 [project.scripts]
 szl-guardrail-receipt = "szl_guardrail_receipt.__main__:main"
