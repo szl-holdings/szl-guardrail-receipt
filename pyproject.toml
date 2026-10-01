@@ -37,6 +37,8 @@ dev = ["pytest>=8", "cryptography>=42"]
 Homepage = "https://a-11-oy.com"
 Repository = "https://github.com/szl-holdings/szl-guardrail-receipt"
 Spec = "https://github.com/szl-holdings/governed-receipt-spec"
+Issues = "https://github.com/szl-holdings/szl-guardrail-receipt/issues"
+Changelog = "https://github.com/szl-holdings/szl-guardrail-receipt/releases"
 
 [project.scripts]
 szl-guardrail-receipt = "szl_guardrail_receipt.__main__:main"
@@ -46,3 +48,6 @@ packages = ["src/szl_guardrail_receipt"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.szl.release]
+import_names = ["szl_guardrail_receipt"] # wheel top-level import names; the release gate fails if the built wheel differs
