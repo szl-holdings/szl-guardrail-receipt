@@ -1,3 +1,19 @@
+[![PyPI](https://img.shields.io/pypi/v/szl-guardrail-receipt)](https://pypi.org/project/szl-guardrail-receipt/) [![Python](https://img.shields.io/pypi/pyversions/szl-guardrail-receipt)](https://pypi.org/project/szl-guardrail-receipt/) [![CI](https://github.com/szl-holdings/szl-guardrail-receipt/actions/workflows/ci.yml/badge.svg)](https://github.com/szl-holdings/szl-guardrail-receipt/actions/workflows/ci.yml) [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+
+## Quickstart
+
+```bash
+pip install szl-guardrail-receipt
+
+# emit a signed, hash-chained decision receipt (demo)
+python -m szl_guardrail_receipt demo
+
+# verify a receipt offline
+python -m szl_guardrail_receipt verify path/to/receipt.json
+```
+
+---
+
 # szl-guardrail-receipt
 
 **Wrap any LLM guardrail. Get a signed, verifiable receipt of every allow/deny decision.**
