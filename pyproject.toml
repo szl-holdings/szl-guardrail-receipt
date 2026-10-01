@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "szl-guardrail-receipt"
-version = "0.1.0"
+version = "0.1.1"
 description = "Thin, dependency-light adapter that wraps any LLM guardrail verdict (Llama-Guard / NeMo-Guardrails / guardrails-ai / your own callable) and emits a signed, hash-chained DSSE decision receipt aligned with SZL's governed-receipt-spec. UNSIGNED-honest fallback; never fabricates a signature, an energy joule, or a Λ 'proven'."
 readme = "README.md"
 license = { text = "Apache-2.0" }
