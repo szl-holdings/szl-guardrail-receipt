@@ -111,9 +111,9 @@ def gate_package(pkg: dict, repo: str, event: str, ref_type: str, ref_name: str,
         fail(f"{pkg['name']}: [project].license (or license-files) is required")
     urls = project.get("urls") or {}
     source_url = urls.get("Source") or urls.get("Repository") or urls.get("Source Code")
-    expected_prefix = f"https://github.com/{repo}"
-    if not source_url or not source_url.rstrip("/").lower().startswith(expected_prefix.lower()):
-        fail(f"{pkg['name']}: [project.urls] must carry Source/Repository = {expected_prefix} (got {source_url!r}); PyPI verifies this against the Trusted Publisher")
+    expected_source_url = f"https://github.com/{repo}"
+    if not isinstance(source_url, str) or source_url.rstrip("/").lower() != expected_source_url.lower():
+        fail(f"{pkg['name']}: [project.urls] must carry Source/Repository = {expected_source_url} (got {source_url!r}); PyPI verifies this against the Trusted Publisher")
 
     # Build into a per-package staging dir, then verify.
     stage = outdir.parent / f"stage-{norm(pkg['name'])}"
