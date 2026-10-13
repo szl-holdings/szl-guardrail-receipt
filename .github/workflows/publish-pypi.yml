@@ -81,14 +81,14 @@ jobs:
           --ref-type "${{ github.ref_type }}"
           --ref-name "${{ github.ref_name }}"
           --outdir dist
-      # actions/upload-artifact v7.0.1
+      # actions/upload-artifact v7.0.2
       - name: Upload release-gate receipt
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: release-gate-receipt
           path: release-gate.json
           if-no-files-found: error
-      # actions/upload-artifact v7.0.1
+      # actions/upload-artifact v7.0.2
       - name: Upload distributions (release only)
         if: github.event_name == 'release'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
@@ -112,7 +112,7 @@ jobs:
       id-token: write   # OIDC token for PyPI Trusted Publishing — the only credential
       contents: read
     steps:
-      # actions/download-artifact v8.0.1
+      # actions/download-artifact v8.0.2
       - name: Download gated distributions
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
