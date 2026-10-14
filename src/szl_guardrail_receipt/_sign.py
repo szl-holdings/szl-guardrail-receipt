@@ -12,6 +12,7 @@ fabricate a signature. Import guard keeps the receipt core pure-stdlib.
 from __future__ import annotations
 
 import base64
+import binascii
 from typing import Tuple
 
 from ._canonical import canonical_json, dsse_pae
@@ -85,12 +86,66 @@ def sign_pae(body_dict: object, private_key_pem: bytes | str) -> str:
     return base64.b64encode(der_sig).decode("ascii")
 
 
+def verify_dsse(
+    payload_type: str,
+    payload_bytes: bytes,
+    signature_b64: str,
+    public_key_pem: bytes | str,
+) -> Tuple[bool, str]:
+    """Verify an ECDSA-P256-SHA256 signature over the DSSE PAE of EXACT bytes.
+
+    The preimage is ``dsse_pae(payload_type, payload_bytes)`` built from the
+    envelope's own declared ``payloadType`` and its exact decoded payload
+    bytes — never a re-serialisation of the decoded body — so a payload-type
+    swap or an alternate serialisation cannot inherit a signature. The key
+    must be an ECDSA P-256 public key (the receipt's declared algorithm).
+
+    Returns:
+        ``(True, "ok")`` on success, ``(False, "<reason>")`` otherwise. Never
+        raises on a bad signature/key/shape — that is a graceful ``False``.
+
+    Raises:
+        SigningUnavailable: when ``cryptography`` is not installed.
+    """
+    if not HAVE_CRYPTO:
+        raise SigningUnavailable("cryptography is not installed")
+    if not isinstance(payload_type, str) or not isinstance(payload_bytes, (bytes, bytearray)):
+        return False, "payloadType must be str and payload must be bytes"
+    if not isinstance(signature_b64, str):
+        return False, "signature is not a base64 string"
+    try:
+        signature = base64.b64decode(signature_b64, validate=True)
+    except (binascii.Error, ValueError):
+        return False, "signature is not strict base64"
+    if isinstance(public_key_pem, str):
+        public_key_pem = public_key_pem.encode("utf-8")
+    try:
+        pub = serialization.load_pem_public_key(public_key_pem)
+    except Exception as exc:  # noqa: BLE001
+        return False, f"invalid key or encoding: {exc}"
+    if not isinstance(pub, ec.EllipticCurvePublicKey) or not isinstance(pub.curve, ec.SECP256R1):
+        return False, "public key is not an ECDSA P-256 key (declared ECDSA-P256-SHA256)"
+    try:
+        pub.verify(signature, dsse_pae(payload_type, bytes(payload_bytes)), ec.ECDSA(hashes.SHA256()))
+        return True, "ok"
+    except InvalidSignature:
+        return False, "signature mismatch"
+    except Exception as exc:  # noqa: BLE001
+        return False, f"invalid signature encoding: {exc}"
+
+
 def verify_pae(
     body_dict: object,
     signature_b64: str,
     public_key_pem: bytes | str,
 ) -> Tuple[bool, str]:
-    """Verify an ECDSA-P256-SHA256 DSSE signature over *body_dict*'s PAE.
+    """Verify a signature produced by :func:`sign_pae` over *body_dict*.
+
+    This helper re-derives the preimage as
+    ``dsse_pae(PAYLOAD_TYPE, canonical_json(body_dict))``, so it answers "was
+    this body signed?" — not "is this envelope authentic?". Receipt
+    verification uses :func:`verify_dsse` over the envelope's exact decoded
+    bytes and declared type instead.
 
     Returns:
         ``(True, "ok")`` on success, ``(False, "<reason>")`` otherwise. Never
@@ -101,14 +156,8 @@ def verify_pae(
     """
     if not HAVE_CRYPTO:
         raise SigningUnavailable("cryptography is not installed")
-    if isinstance(public_key_pem, str):
-        public_key_pem = public_key_pem.encode("utf-8")
     try:
-        pub = serialization.load_pem_public_key(public_key_pem)
-        signing_bytes = dsse_pae(PAYLOAD_TYPE, canonical_json(body_dict))
-        pub.verify(base64.b64decode(signature_b64), signing_bytes, ec.ECDSA(hashes.SHA256()))
-        return True, "ok"
-    except InvalidSignature:
-        return False, "signature mismatch"
+        payload_bytes = canonical_json(body_dict)
     except Exception as exc:  # noqa: BLE001
-        return False, f"invalid key or encoding: {exc}"
+        return False, f"body is not JSON-serialisable: {exc}"
+    return verify_dsse(PAYLOAD_TYPE, payload_bytes, signature_b64, public_key_pem)
