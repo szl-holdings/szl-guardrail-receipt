@@ -64,6 +64,24 @@ def _sha256_hex(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+#: Fields the issuer leaves out of the ``digest`` preimage. ``digest`` cannot
+#: cover itself; every other sealed field (including ``signature``'s
+#: ``DSSE_PLACEHOLDER`` slot) is bound.
+DIGEST_EXCLUDED_FIELDS = frozenset({"digest"})
+
+
+def body_digest(body: Dict[str, Any]) -> str:
+    """Return the issuer-defined chain digest of a decoded decision *body*.
+
+    ``sha256(canonical_json(body without DIGEST_EXCLUDED_FIELDS))`` — the single
+    definition shared by the issuer (:func:`build_decision_body`) and the
+    verifier, so the two can never drift.
+    """
+    return _sha256_hex(
+        canonical_json({k: v for k, v in body.items() if k not in DIGEST_EXCLUDED_FIELDS})
+    )
+
+
 def input_digest(text: str) -> str:
     """SHA-256 (hex) of *text* encoded UTF-8 — the receipt's ``payload_digest``."""
     return _sha256_hex(text.encode("utf-8"))
@@ -136,8 +154,7 @@ def build_decision_body(
     }
     if verdict.metadata:
         body["guardrail"]["metadata"] = dict(verdict.metadata)
-    body_wo_digest = {k: v for k, v in body.items() if k != "digest"}
-    body["digest"] = _sha256_hex(canonical_json(body_wo_digest))
+    body["digest"] = body_digest(body)
     return body
 
 

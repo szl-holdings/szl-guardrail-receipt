@@ -131,7 +131,9 @@ python -m szl_guardrail_receipt verify examples/guardrail-receipt-chain.json
 python -m szl_guardrail_receipt verify chain.json --pubkey key.pem   # + check signatures
 ```
 
-The verifier (a) structurally checks the DSSE envelope, (b) recomputes `sha256(DSSE PAE)` against `_pae_sha256`, (c) checks the decision fields + honesty invariants (decision enum, deny⇒honest_blocked, no fabricated energy joule), (d) verifies the ECDSA-P256 signature when signed and a key is given, and (e) checks the `prev → digest` chain.
+The verifier (a) structurally checks the DSSE envelope (strict, canonical base64 payload), (b) recomputes `sha256(DSSE PAE)` against `_pae_sha256`, which is **required** (a missing or malformed hash fails), (c) requires every clear wrapper claim (`schema`, `ns`, `ts`, `verify`, …) to appear identically inside the sealed payload and rejects unknown envelope fields, (d) checks the decision fields, their types, and the honesty invariants (decision enum, deny⇒honest_blocked, no fabricated energy joule), (e) **recomputes the body `digest`** and rejects a stale or forged one, (f) verifies the ECDSA-P256 signature when signed and a key is given, and (g) checks the `prev → digest` chain against the *recomputed* digests. Malformed input of any shape is a bounded `FAIL`; the verifier never raises on receipt content.
+
+Compatibility: receipts emitted by 0.1.2 (the committed sample included) verify unchanged. Receipts from 0.1.1 and earlier, whose clear wrapper claims were not sealed into the payload, now fail the clear-claim binding check, as they already do under the `governed-receipt-spec` verifier.
 
 **Cross-verifier compatible.** Receipts emitted here also validate with the dependency-free spec verifier, schema included:
 
@@ -152,7 +154,7 @@ pip install -e ".[dev]"
 pytest -q
 ```
 
-Valid receipts pass; a tampered payload breaks the content hash, a rewritten `prev` breaks the chain, a fabricated energy joule is rejected, and a signature signed by the wrong key fails.
+Valid receipts pass; a tampered payload breaks the content hash, a stripped content hash fails, a body rewritten under its old digest (even with a recomputed content hash) fails the digest check, a rewritten `prev` breaks the chain, a clear claim that differs from the sealed payload is rejected as UNBOUND, a fabricated energy joule is rejected, malformed payloads fail without raising, and a signature signed by the wrong key fails.
 
 ---
 
