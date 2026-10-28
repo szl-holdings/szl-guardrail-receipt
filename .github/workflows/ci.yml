@@ -30,7 +30,9 @@ jobs:
 
   test:
     name: pytest (${{ matrix.python-version }})
-    runs-on: ubuntu-latest
+    # actions/setup-python publishes no CPython 3.9 build for Ubuntu 26.04 (the
+    # current ubuntu-latest), so the declared 3.9 floor runs on ubuntu-24.04.
+    runs-on: ${{ matrix.python-version == '3.9' && 'ubuntu-24.04' || 'ubuntu-latest' }}
     strategy:
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12"]
