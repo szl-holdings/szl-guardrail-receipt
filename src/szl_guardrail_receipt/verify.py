@@ -375,7 +375,7 @@ def signature_status(
         return SIG_INVALID, f"signed marker is not a boolean: {_brief(signed)}"
     if not isinstance(sigs, list) or not sigs:
         return SIG_INVALID, "signed=true but no signatures present"
-    if not public_key_pem:
+    if public_key_pem is None:
         return SIG_UNAUTHENTICATED, (
             "UNAUTHENTICATED signed, but no public key supplied — signature not checked"
         )
@@ -566,7 +566,10 @@ def verify_records_assurance(
             key is supplied — supplying a trust anchor asks for authenticity,
             so a stripped/downgraded signature fails instead of passing.
     """
-    strict = bool(public_key_pem) if require_authenticated is None else bool(require_authenticated)
+    # An explicitly supplied empty PEM is still a request for authentication.
+    # Only None means the caller omitted the trust anchor.
+    key_supplied = public_key_pem is not None
+    strict = key_supplied if require_authenticated is None else bool(require_authenticated)
     lines: List[str] = []
     integrity_ok = True
     decisions: List[Dict[str, Any]] = []
@@ -609,7 +612,7 @@ def verify_records_assurance(
         summary = (
             "FAIL UNAUTHENTICATED authenticated assurance required but not "
             f"established ({gap}; "
-            f"{'a public key was supplied' if public_key_pem else 'no public key supplied'})"
+            f"{'a public key was supplied' if key_supplied else 'no public key supplied'})"
         )
     else:
         ok, assurance = True, ASSURANCE_STRUCTURAL_ONLY
@@ -731,3 +734,4 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
