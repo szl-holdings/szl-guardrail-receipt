@@ -479,3 +479,13 @@ def test_cli_empty_pubkey_fails_instead_of_downgrading_to_structural(tmp_path, c
 def test_payload_type_constant_is_the_declared_contract():
     assert _allow_receipt()["envelope"]["payloadType"] == PAYLOAD_TYPE
 
+
+
+def test_cli_empty_pubkey_argument_cannot_disable_authentication(tmp_path, capsys):
+    path = _write(tmp_path, "unsigned.json", [_allow_receipt()])
+    with pytest.raises(SystemExit) as exc:
+        verify_cli([path, "--pubkey", ""])
+    assert exc.value.code == 2
+    captured = capsys.readouterr()
+    assert "--pubkey must name a PEM file" in captured.err
+    assert "PASS" not in captured.out

@@ -700,6 +700,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     )
     args = parser.parse_args(argv)
 
+    if args.pubkey == "":
+        parser.error("--pubkey must name a PEM file")
+
     pub = None
     if args.pubkey:
         with open(args.pubkey, "rb") as fh:
