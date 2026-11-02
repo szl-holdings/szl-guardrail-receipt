@@ -27,9 +27,13 @@ def canonical_json(obj: object) -> bytes:
 
     Returns:
         UTF-8 bytes with sorted keys and no insignificant whitespace.
+
+    Raises:
+        ValueError: If any nested value is NaN or infinity, which JSON cannot
+            represent. Reject these before a body is hashed or signed.
     """
     return json.dumps(
-        obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+        obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False
     ).encode("utf-8")
 
 
