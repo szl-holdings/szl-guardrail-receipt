@@ -360,6 +360,38 @@ def test_empty_input_is_never_authenticated():
     assert result.assurance == "unauthenticated"
 
 
+@pytest.mark.parametrize("public_key", [b"", ""])
+def test_empty_supplied_key_still_requires_authenticated_assurance(public_key):
+    result = verify_records_assurance([_allow_receipt()], public_key)
+    assert result.ok is False
+    assert result.require_authenticated is True
+    assert result.assurance == "unauthenticated"
+    assert "a public key was supplied" in result.lines[-1]
+
+
+@pytest.mark.parametrize("public_key", [b"", ""])
+def test_explicit_structural_mode_with_empty_key_remains_available(public_key):
+    result = verify_records_assurance(
+        [_allow_receipt()], public_key, require_authenticated=False
+    )
+    assert result.ok is True
+    assert result.require_authenticated is False
+    assert result.assurance == "structural-only"
+
+
+@pytest.mark.parametrize("public_key", [b"", ""])
+def test_empty_key_is_invalid_for_signed_receipts(public_key):
+    from szl_guardrail_receipt import _sign
+
+    if not _sign.crypto_available():
+        pytest.skip("cryptography is optional")
+    records = json.loads(_SAMPLE_CHAIN.read_text(encoding="utf-8"))
+    result = verify_records_assurance(records, public_key, require_authenticated=False)
+    assert result.ok is False
+    assert result.assurance == "failed"
+    assert any("invalid key" in line for line in result.lines)
+
+
 def test_integrity_failure_reports_failed_not_structural():
     rec = _allow_receipt()
     del rec["envelope"]["_pae_sha256"]
@@ -434,5 +466,16 @@ def test_cli_integrity_failure_exit(tmp_path, capsys):
     assert "OVERALL: FAIL" in capsys.readouterr().out
 
 
+def test_cli_empty_pubkey_fails_instead_of_downgrading_to_structural(tmp_path, capsys):
+    path = _write(tmp_path, "unsigned.json", [_allow_receipt()])
+    key = tmp_path / "empty.pem"
+    key.write_bytes(b"")
+    assert verify_cli([path, "--pubkey", str(key)]) == 3
+    out = capsys.readouterr().out
+    assert "OVERALL: FAIL (unauthenticated" in out
+    assert "PASS (structural-only" not in out
+
+
 def test_payload_type_constant_is_the_declared_contract():
     assert _allow_receipt()["envelope"]["payloadType"] == PAYLOAD_TYPE
+
