@@ -105,6 +105,11 @@ record = chain.emit(verdict, input_text=prompt)
 
 `GuardrailVerdict` accepts any guardrail's output; `verdict_from_callable` normalises `bool` or a dict with `allowed`/`blocked`/`flagged` + optional `reason`/`categories`/`lambda_score`.
 
+Receipt emission requires `GuardrailVerdict.allowed` to be an actual boolean,
+including when a verdict is constructed directly or changed after construction.
+Strings such as `"false"`, numbers, and other non-boolean values raise `TypeError`
+before any receipt is signed or the chain advances.
+
 ---
 
 ## What's in a receipt

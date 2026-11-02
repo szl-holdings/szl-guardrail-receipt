@@ -5,8 +5,11 @@ from __future__ import annotations
 import base64
 import json
 
+import pytest
+
 from szl_guardrail_receipt import (
     GuardrailReceiptChain,
+    GuardrailVerdict,
     RuleBasedGuardrail,
     emit_receipt,
     input_digest,
@@ -15,6 +18,7 @@ from szl_guardrail_receipt.receipt import (
     RECEIPT_SCHEMA,
     RECORD_SCHEMA,
     ZERO_HASH,
+    build_decision_body,
     decode_decision,
 )
 
@@ -108,3 +112,51 @@ def test_payload_digest_binds_input_not_content():
     # the raw content is never embedded — only its digest
     assert "secret content" not in json.dumps(body)
     assert body["payload_digest"] == input_digest("secret content")
+
+
+@pytest.mark.parametrize("allowed", ["false", "true", "", 0, 1, None, [], {}])
+@pytest.mark.parametrize("entrypoint", ["body", "receipt", "chain"])
+def test_direct_verdict_requires_boolean_before_emission(allowed, entrypoint, monkeypatch):
+    from szl_guardrail_receipt import receipt
+
+    verdict = GuardrailVerdict(
+        allowed=allowed, guardrail_name="external", guardrail_version="1"
+    )
+
+    def unexpected_envelope(*args, **kwargs):
+        pytest.fail("an invalid decision must not reach envelope construction/signing")
+
+    monkeypatch.setattr(receipt, "_make_envelope", unexpected_envelope)
+    with pytest.raises(TypeError, match="allowed.*boolean"):
+        if entrypoint == "body":
+            build_decision_body(
+                verdict, ns="test", seq=0, prev=ZERO_HASH,
+                payload_digest=input_digest("screened input"),
+            )
+        elif entrypoint == "receipt":
+            emit_receipt(verdict, input_text="screened input")
+        else:
+            GuardrailReceiptChain().emit(verdict, input_text="screened input")
+
+
+def test_rejected_mutated_verdict_preserves_chain_state():
+    verdict = GuardrailVerdict(
+        allowed=False, guardrail_name="external", guardrail_version="1"
+    )
+    chain = GuardrailReceiptChain()
+    first = _body(chain.emit(verdict, input_text="first"))
+
+    # GuardrailVerdict is mutable, so construction-time validation is insufficient.
+    verdict.allowed = "false"
+    with pytest.raises(TypeError, match="allowed.*boolean"):
+        chain.emit(verdict, input_text="rejected")
+    assert chain.head == first["digest"]
+
+    verdict.allowed = True
+    second = _body(chain.emit(verdict, input_text="second"))
+    assert first["decision"] == "deny"
+    assert first["honest_blocked"] is True
+    assert second["decision"] == "allow"
+    assert second["honest_blocked"] is False
+    assert second["seq"] == 1
+    assert second["prev"] == first["digest"]
