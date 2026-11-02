@@ -107,11 +107,17 @@ def build_decision_body(
     verbatim. That makes every clear wrapper claim independently bindable to the
     DSSE payload instead of allowing unsigned metadata to inherit a signed PASS.
 
+    ``verdict.allowed`` must be an actual boolean, including for directly
+    constructed or subsequently mutated verdicts. Invalid decisions are
+    rejected before hashing, signing, or advancing a receipt chain.
+
     Returns:
         The decision body dict, including ``digest`` and a
         ``signature: "DSSE_PLACEHOLDER"`` slot (the authoritative signature
         lives in the DSSE envelope, matching the estate convention).
     """
+    if type(verdict.allowed) is not bool:
+        raise TypeError("guardrail verdict 'allowed' must be a boolean")
     if ts is None:
         ts = time.time()
     decision = "allow" if verdict.allowed else "deny"
