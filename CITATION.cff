@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it using the metadata from this file.
+type: software
+title: szl-holdings/szl-guardrail-receipt — Wrap any LLM guardrail (Llama-Guard / NeMo / guardrails-ai
+  / your callable) and emit a
+version: 0.1.2
+date-released: '2026-11-05'
+license: Apache-2.0
+url: https://a-11-oy.com
+repository-code: https://github.com/szl-holdings/szl-guardrail-receipt
+authors:
+- family-names: Lutar
+  given-names: Stephen P.
+  name-suffix: Jr.
+  orcid: https://orcid.org/0009-0001-0110-4173
+  affiliation: SZL Holdings
+keywords:
+- ai-safety
+- dsse
+- governed-ai
+- guardrails
+- llm-guardrails
+- provenance
+- receipts
+- szl-holdings
+- python
