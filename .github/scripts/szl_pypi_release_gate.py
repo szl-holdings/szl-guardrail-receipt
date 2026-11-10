@@ -161,15 +161,17 @@ def gate_package(pkg: dict, repo: str, event: str, ref_type: str, ref_name: str,
             fail(f"{pkg['name']}=={version} already exists on PyPI; bump [project].version before releasing")
         warn(f"{pkg['name']}=={version} already exists on PyPI; a release will require a version bump")
 
-    # Smoke-install the wheel in isolation and import-check the declared names.
+    # Ignore checkout/PYTHONPATH/user-site modules in every venv probe: otherwise
+    # a healthy source tree can mask a broken or incomplete installed wheel.
     venv = outdir.parent / f"venv-{norm(pkg['name'])}"
     shutil.rmtree(venv, ignore_errors=True)
     sh([sys.executable, "-m", "venv", str(venv)])
     vpy = venv / ("Scripts" if os.name == "nt" else "bin") / "python"
-    sh([str(vpy), "-m", "pip", "install", "--disable-pip-version-check", "-q", str(wheels[0])])
-    sh([str(vpy), "-c", f"import importlib.metadata as m; assert m.version({pkg['name']!r}) == {version!r}, m.version({pkg['name']!r})"])
+    sh([str(vpy), "-I", "-m", "pip", "install", "--disable-pip-version-check", "-q", str(wheels[0])])
+    sh([str(vpy), "-I", "-m", "pip", "check"])
+    sh([str(vpy), "-I", "-c", f"import importlib.metadata as m; assert m.version({pkg['name']!r}) == {version!r}, m.version({pkg['name']!r})"])
     for mod in declared or []:
-        sh([str(vpy), "-c", f"import importlib; importlib.import_module({mod!r})"])
+        sh([str(vpy), "-I", "-c", f"import importlib; importlib.import_module({mod!r})"])
 
     outdir.mkdir(parents=True, exist_ok=True)
     receipt = {"package": pkg["name"], "version": version, "environment": pkg["environment"], "event": event, "ref": f"{ref_type}:{ref_name}",
