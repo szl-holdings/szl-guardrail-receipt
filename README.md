@@ -5,10 +5,13 @@
 ```bash
 pip install szl-guardrail-receipt
 
-# emit a signed, hash-chained decision receipt (demo)
+# Demo receipts are UNSIGNED unless cryptography and a key are present.
+# `pip install szl-guardrail-receipt` is the stdlib core only.
+# Use `pip install "szl-guardrail-receipt[sign]"` so the demo can sign
+# with an ephemeral key; otherwise the output is UNSIGNED-honest.
 python -m szl_guardrail_receipt demo
 
-# verify a receipt offline
+# verify a receipt offline (structural-only without --pubkey)
 python -m szl_guardrail_receipt verify path/to/receipt.json
 ```
 
@@ -76,7 +79,11 @@ print(verdict.allowed, result.ok, result.assurance)
 
 `verify_records([record])` still returns the familiar `(ok, report_lines)` pair; its last report line names the assurance level.
 
-Run the bundled demo (no arguments, no network):
+Run the bundled demo (no arguments, no network). With the default
+`pip install szl-guardrail-receipt` (no `cryptography`), the demo emits
+UNSIGNED-honest receipts and prints `signed: False`. Signatures are
+produced only if cryptography is installed (the `[sign]` extra) and a
+key is available — the demo then uses an ephemeral key.
 
 ```bash
 python -m szl_guardrail_receipt demo
